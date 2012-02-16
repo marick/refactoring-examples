@@ -36,4 +36,21 @@ class Test::Unit::TestCase
     @result = $what_runs_after_mock_setup.call
   end
 
+  def listeners_to(object)
+    klass = object.class.const_get("Listener")
+    any_old_listener = klass.new
+    object.add_listener(any_old_listener)
+
+    # mock(any_old_listener).increase_setting
+    mockable = mock(any_old_listener)
+
+    def mockable.run_methods(&block)
+      instance_eval(&block)
+      $what_runs_after_mock_setup.call
+    end
+    mockable
+  end
+
+
+
 end
