@@ -51,6 +51,43 @@ class Test::Unit::TestCase
     mockable
   end
 
+  def mocked(n = 1)
+    if (n == 1)
+      one_mock
+    else
+      (0...n).collect do
+        one_mock
+      end
+    end
+  end
+
+  def one_mock
+    core_object = Object.new
+    mock_wrapper = mock(core_object)
+    core_object.define_singleton_method(:receives) { mock_wrapper }
+    core_object
+  end
+
+
+  def collaborators(*names)
+    ensure_strings(names).each do | name |
+      result = one_mock()
+      self.instance_variable_set(instance_name(name), result)
+    end
+  end
+  alias_method :collaborator, :collaborators
+
+
+  private
+
+  def ensure_strings(maybe_symbols)
+    maybe_symbols.collect(&:to_s)
+  end
+
+  def instance_name(raw_name)
+    "@" + raw_name.to_s
+  end
+
 
 
 end
