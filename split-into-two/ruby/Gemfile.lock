@@ -1,0 +1,21 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    assert2 (0.5.5)
+    fail-fast (1.0.0)
+    hookr (1.1.1)
+      fail-fast (= 1.0.0)
+    rr (1.0.4)
+    shoulda (2.11.3)
+    test-unit (2.4.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  assert2
+  bundler
+  hookr
+  rr
+  shoulda
+  test-unit

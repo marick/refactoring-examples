@@ -1,0 +1,9 @@
+# A sample Gemfile
+source "http://rubygems.org"
+
+gem "shoulda"
+gem "assert2"
+gem "bundler"
+gem "test-unit"
+gem "rr"
+gem "hookr"
