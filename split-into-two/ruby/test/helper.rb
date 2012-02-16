@@ -27,7 +27,10 @@ end
 # receive.
 class Test::Unit::TestCase
   def during(&block)
-    $what_runs_after_mock_setup = block  # Feh
+    # Use of global needed for current way of handling
+    # listeners:
+    #  listeners_to(@sut).run_methods {...}
+    $what_runs_after_mock_setup = block  
     self
   end
 
