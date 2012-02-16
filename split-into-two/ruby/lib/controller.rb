@@ -2,8 +2,13 @@ class Controller
   def initialize(defaults)
     @value_tweaker = defaults[:value_tweaker]
     @hardware = defaults[:hardware]
+    @setting_changing_page = defaults[:setting_changing_page]
     @authoritative_value = defaults[:starting_value]
     @allowed_range = defaults[:allowed_range]
+  end
+
+  def user_wants_to_change_settings
+    @setting_changing_page.reveal
   end
 
   def adjust_setting(delta)

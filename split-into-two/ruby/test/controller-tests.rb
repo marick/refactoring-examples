@@ -6,9 +6,10 @@ class ControllerTest < Test::Unit::TestCase
   MAX = 20
 
   def setup
-    collaborators :value_tweaker, :hardware
+    collaborators :value_tweaker, :hardware, :setting_changing_page
     @sut = Controller.new(value_tweaker: @value_tweaker,
                           hardware: @hardware,
+                          setting_changing_page: @setting_changing_page,
                           starting_value: DEFAULT_VALUE,
                           allowed_range: MIN..MAX)
   end
@@ -43,6 +44,14 @@ class ControllerTest < Test::Unit::TestCase
       @hardware.receives.update(MIN)
     }
     assert_equal(MIN, @sut.setting)
+  end
+
+  should "reveal setting-changing page when user desires" do
+    during {
+      @sut.user_wants_to_change_settings
+    }.behold! {
+      @setting_changing_page.receives.reveal
+    }
   end
 
 end
