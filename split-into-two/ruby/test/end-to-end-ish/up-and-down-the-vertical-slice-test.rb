@@ -1,5 +1,5 @@
-require "./testutil"
 
+require "./testutil"
 class UpAndDownTheVerticalSliceTest < Test::Unit::TestCase
 
   def setup

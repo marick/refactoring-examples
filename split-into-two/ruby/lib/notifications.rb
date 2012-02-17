@@ -2,11 +2,20 @@ require 'hookr'
 
 module Notifications
   include HookR::Hooks
-  alias_method :tell_listeners, :execute_hook
+
+  def listeners
+    # Whee! Javascript!
+    this = self
+    proxy = Object.new
+    proxy.define_singleton_method(:send, -> *args {
+      this.execute_hook(*args)
+    })
+    proxy
+  end
 
   module NotificationDefinitions
     include HookR::Hooks::ClassMethods
-    alias_method :tells_listeners, :define_hook
+    alias_method :broadcasts, :define_hook
   end
 
   # I know this is uncool these days.

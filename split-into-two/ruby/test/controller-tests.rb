@@ -18,7 +18,7 @@ class ControllerTest < Test::Unit::TestCase
     during {
       @sut.adjust_setting(3)
     }.behold! {
-      @hardware.receives.update(DEFAULT_VALUE+3)
+      @hardware.is_sent.update(DEFAULT_VALUE+3)
     }
     assert_equal(DEFAULT_VALUE+3, @sut.setting)
   end
@@ -28,8 +28,8 @@ class ControllerTest < Test::Unit::TestCase
       up_to_top = MAX-DEFAULT_VALUE
       @sut.adjust_setting(up_to_top+1)
     }.behold! {
-      @hardware.receives.update(MAX)
-      dont_allow(@value_tweaker).update(anything)
+      @hardware.is_sent.update(MAX)
+      @value_tweaker.is_sent.update(anything).never
     }
     assert_equal(MAX, @sut.setting)
   end
@@ -39,8 +39,8 @@ class ControllerTest < Test::Unit::TestCase
       down_to_bottom = MIN - DEFAULT_VALUE
       @sut.adjust_setting(down_to_bottom - 1)
     }.behold! {
-      @hardware.receives.update(MIN)
-      dont_allow(@value_tweaker).update(anything)
+      @hardware.is_sent.update(MIN)
+      @value_tweaker.is_sent.update(anything).never
     }
     assert_equal(MIN, @sut.setting)
   end
@@ -49,8 +49,7 @@ class ControllerTest < Test::Unit::TestCase
     during {
       @sut.user_wants_to_change_settings
     }.behold! {
-      @setting_changing_page.receives.reveal
-      dont_allow(@value_tweaker).update(anything)
+      @setting_changing_page.is_sent.reveal
     }
   end
 
@@ -59,8 +58,8 @@ class ControllerTest < Test::Unit::TestCase
     during {
       @sut.accept_hardware_setting(DEFAULT_VALUE+3)
     }.behold! {
-      @value_tweaker.receives.display(DEFAULT_VALUE+3)
-      dont_allow(@hardware).update(anything)
+      @value_tweaker.is_sent.display(DEFAULT_VALUE+3)
+      @hardware.is_sent.update(anything).never
     }
     assert_equal(DEFAULT_VALUE+3, @sut.setting)
   end

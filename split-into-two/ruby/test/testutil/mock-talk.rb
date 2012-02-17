@@ -27,7 +27,7 @@ class Test::Unit::TestCase
     # mock(any_old_listener).increase_setting
     mockable = mock(any_old_listener)
 
-    def mockable.run_methods(&block)
+    def mockable.are_sent(&block)
       instance_eval(&block)
       $what_runs_after_mock_setup.call
     end
@@ -47,7 +47,7 @@ class Test::Unit::TestCase
   def one_mock
     core_object = Object.new
     mock_wrapper = mock(core_object)
-    core_object.define_singleton_method(:receives) { mock_wrapper }
+    core_object.define_singleton_method(:is_sent) { mock_wrapper }
     core_object
   end
 

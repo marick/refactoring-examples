@@ -10,7 +10,7 @@ class HardwareTests < Test::Unit::TestCase
   should "tell listeners when told to update" do
     during {
       @sut.update(33)
-    }.listeners_to(@sut).run_methods {
+    }.listeners_to(@sut).are_sent {
       accept_hardware_setting(33)
     }
     assert_equal(33, @sut.setting)

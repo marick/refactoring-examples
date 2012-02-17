@@ -5,18 +5,18 @@ require 'notifications'
 # by some increment, plus a way to display that value.
 class ValueTweaker
   include Notifications
-  tells_listeners :adjust_setting, :delta
+  broadcasts :adjust_setting, :delta
 
   def display(value)
     @displayed_value = value
   end
 
   def click_up
-    tell_listeners :adjust_setting, 1
+    listeners.send(:adjust_setting, 1)
   end
 
   def click_down
-    tell_listeners :adjust_setting, -1
+    listeners.send(:adjust_setting, -1)
   end
 
   test_support
