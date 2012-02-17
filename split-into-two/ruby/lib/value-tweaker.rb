@@ -8,6 +8,7 @@ class ValueTweaker
   tells_listeners :adjust_setting, :delta
 
   def display(value)
+    @displayed_value = value
   end
 
   def click_up
@@ -17,4 +18,8 @@ class ValueTweaker
   def click_down
     tell_listeners :adjust_setting, -1
   end
+
+  test_support
+
+  attr_reader :displayed_value
 end

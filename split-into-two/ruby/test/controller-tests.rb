@@ -14,11 +14,10 @@ class ControllerTest < Test::Unit::TestCase
                           allowed_range: MIN..MAX)
   end
 
-  should "change controlled object's displayed values when adjusting" do
+  should "change hardware wn user wants to adjust setting" do
     during {
       @sut.adjust_setting(3)
     }.behold! {
-      @value_tweaker.receives.display(DEFAULT_VALUE+3)
       @hardware.receives.update(DEFAULT_VALUE+3)
     }
     assert_equal(DEFAULT_VALUE+3, @sut.setting)
@@ -29,8 +28,8 @@ class ControllerTest < Test::Unit::TestCase
       up_to_top = MAX-DEFAULT_VALUE
       @sut.adjust_setting(up_to_top+1)
     }.behold! {
-      @value_tweaker.receives.display(MAX)
       @hardware.receives.update(MAX)
+      dont_allow(@value_tweaker).update(anything)
     }
     assert_equal(MAX, @sut.setting)
   end
@@ -40,8 +39,8 @@ class ControllerTest < Test::Unit::TestCase
       down_to_bottom = MIN - DEFAULT_VALUE
       @sut.adjust_setting(down_to_bottom - 1)
     }.behold! {
-      @value_tweaker.receives.display(MIN)
       @hardware.receives.update(MIN)
+      dont_allow(@value_tweaker).update(anything)
     }
     assert_equal(MIN, @sut.setting)
   end
@@ -51,6 +50,7 @@ class ControllerTest < Test::Unit::TestCase
       @sut.user_wants_to_change_settings
     }.behold! {
       @setting_changing_page.receives.reveal
+      dont_allow(@value_tweaker).update(anything)
     }
   end
 

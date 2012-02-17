@@ -13,13 +13,12 @@ class Controller
 
   def adjust_setting(delta)
     @authoritative_value = closest_to_desired_value(delta)
-    update_value_tweaker
-    update_hardware
+    @hardware.update(@authoritative_value)
   end
 
   def accept_hardware_setting(absolute_value)
     @authoritative_value = absolute_value
-    update_value_tweaker
+    @value_tweaker.display(@authoritative_value)
   end
 
   test_support
@@ -27,14 +26,6 @@ class Controller
   def setting; @authoritative_value; end
 
   private
-
-  def update_hardware
-    @hardware.update(@authoritative_value)
-  end
-
-  def update_value_tweaker
-    @value_tweaker.display(@authoritative_value)
-  end
 
   def closest_to_desired_value(delta)
     desired = @authoritative_value + delta

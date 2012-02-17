@@ -1,5 +1,6 @@
 require 'truly-restrained-monkeypatching'
-require "configuration"
+require "hardware"
 require "places"
 require "value-tweaker"
 require 'controller'
+require "configuration"
