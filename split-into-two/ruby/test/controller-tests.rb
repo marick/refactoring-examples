@@ -54,4 +54,14 @@ class ControllerTest < Test::Unit::TestCase
     }
   end
 
+  should "accept changes from the hardware and notify the value tweaker" do
+    # Note: values outside the valid ranger are "impossible"
+    during {
+      @sut.accept_hardware_setting(DEFAULT_VALUE+3)
+    }.behold! {
+      @value_tweaker.receives.display(DEFAULT_VALUE+3)
+      dont_allow(@hardware).update(anything)
+    }
+    assert_equal(DEFAULT_VALUE+3, @sut.setting)
+  end
 end
