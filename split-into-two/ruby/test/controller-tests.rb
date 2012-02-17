@@ -1,4 +1,4 @@
-require "./helper"
+require "./testutil"
 
 class ControllerTest < Test::Unit::TestCase
   DEFAULT_VALUE = 10

@@ -1,4 +1,4 @@
-require './helper'
+require './testutil'
 
 class PlacesTests < Test::Unit::TestCase
 
