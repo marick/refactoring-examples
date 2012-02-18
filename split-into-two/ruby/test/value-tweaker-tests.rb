@@ -1,4 +1,4 @@
-require './testutil'
+require_relative 'testutil'
 require 'notifications'
 
 class ValueTweakerTests < Test::Unit::TestCase

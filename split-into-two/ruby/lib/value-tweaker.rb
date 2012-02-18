@@ -1,4 +1,4 @@
-require 'notifications'
+require_relative 'notifications'
 
 # ValueTweaker is some sort of composite view object
 # that has controls for bumping the value up or down

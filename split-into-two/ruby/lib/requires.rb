@@ -1,6 +1,6 @@
-require 'truly-restrained-monkeypatching'
-require "hardware"
-require "places"
-require "value-tweaker"
-require 'controller'
-require "configuration"
+require_relative 'truly-restrained-monkeypatching'
+require_relative "hardware"
+require_relative "places"
+require_relative "value-tweaker"
+require_relative 'controller'
+require_relative "configuration"

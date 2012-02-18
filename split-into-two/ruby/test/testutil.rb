@@ -17,5 +17,5 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'requires'
-require './testutil/mock-talk'
+require_relative 'testutil/mock-talk'
 

@@ -1,4 +1,4 @@
-require './testutil'
+require_relative 'testutil'
 
 class PlacesTests < Test::Unit::TestCase
 

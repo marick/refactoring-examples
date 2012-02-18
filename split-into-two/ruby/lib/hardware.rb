@@ -1,4 +1,4 @@
-require 'notifications'
+require_relative 'notifications'
 
 class Hardware
   include Notifications

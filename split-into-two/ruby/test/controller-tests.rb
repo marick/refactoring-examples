@@ -1,4 +1,4 @@
-require "./testutil"
+require_relative "./testutil"
 
 class ControllerTest < Test::Unit::TestCase
   DEFAULT_VALUE = 10
