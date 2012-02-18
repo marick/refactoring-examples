@@ -23,7 +23,7 @@ this:
 That causes the `adjust_setting` method to be invoked on all
 of the registered listeners (the controller, in this case).
 
-** capturing ordinary message sends in tests **
+**capturing ordinary message sends in tests**
 
 I write mock-style tests using this format:
 
@@ -42,7 +42,7 @@ I like my format because it reads funny to see the effect
 specified before the cause. That's required in languages
 without blocks, but Ruby's not one of those languages.
 
-** listening in tests **
+**listening in tests**
 
 When objects broadcast messages, you want to make assertions
 about what *any* listener receives. That's written like
