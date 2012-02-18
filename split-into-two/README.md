@@ -55,65 +55,8 @@ that handles the vertical interaction (call it the
 Reading the code and tests
 --------------
 
-I recommend starting with
-test/end-to-end-ish/up-and-down-the-vertical-slice-test.rb. 
-
-**broadcast**
-
-The code uses a vague sort of "broadcast a message send"
-metaphor for some of its communication. For example, the
-`ValueTweaker` broadcasts messages that happen to be caught by
-the `Controller`. This wiring can be seen in configuration.rb,
-which looks roughly like this:
-
-    ui = ValueTweaker.new
-    controller = Controller.new
-    ui.add_listener(controller)
-
-Just as a message is sent to a single object using `send`, a
-message is broadcast by sending it to a `listeners`
-object. So, for example, one `ValueTweaker` method contains
-this:
-
-    listeners.send(:adjust_setting, 1)
-
-That causes the `adjust_setting` method to be invoked on all
-of the registered listeners (the controller, in this case).
-
-** capturing ordinary message sends in tests **
-
-I write mock-style tests using this format:
-
-    during {
-      ... some code execution ...
-    }.behold! {
-      object.is_sent.message(arg1, arg2)
-    }
-
-In a more familiar mocking notation, this would be written:
-
-    object.expects(:message).with(arg1, arg2)
-   ... some code execution ...
-
-I like my format because it reads funny to see the effect
-specified before the cause. That's required in languages
-without blocks, but Ruby's not one of those languages.
-
-** listening in tests **
-
-When objects broadcast messages, you want to make assertions
-about what *any* listener receives. That's written like
-this:
-
-    during {
-      ...some code execution... 
-    }.listeners_to(@sut).are_sent {
-      adjust_setting(1)
-    }
-
-As with ordinary mocks, `adjust_setting(1)` means "[all
-listeners] should receive the `:adjust_setting` message
-carrying the single argument `1`.
+Each of the subdirectories has a README.md file that
+describes quirks of the implementation.
 
 
 Exercise 1: Superclass refactoring
@@ -137,7 +80,7 @@ Navigator.
     controlling settings up into the `SettingAuthority` test
     suite. Move the code to make them pass.
 
-1.  When that’s done, we still have a `Controller` object that
+1.  When that's done, we still have a `Controller` object that
     does everything it used to do. We also have an
     end-to-end test that checks that a tweak of the UI
     propagates down into the system to make a change and
@@ -152,16 +95,16 @@ Navigator.
    `SettingAuthority` to the `ValueTweaker` and to the
    appropriate object down toward the hardware, and (3)
    continues to connect the `Controller` to the objects that
-   don’t have anything to do with changing the tweakable
+   don't have anything to do with changing the tweakable
    value. Confirm (manually) that both tweaking and the
    remaining `Controller` end-to-end behaviors work.
 
-1. Since it no longer uses its superclass’s behavior, change
-   `Controller` so that it’s no longer a subclass of
+1. Since it no longer uses its superclass's behavior, change
+   `Controller` so that it's no longer a subclass of
    `SettingAuthority`.
 
 1. Change the wire-up-the-whole-subsystem object so that it
-   also makes story B’s vertical slice (new `ValueTweaker`,
+   also makes story B's vertical slice (new `ValueTweaker`,
    new `SettingAuthority`, new connection to the
    hardware). Confirm manually.
 
