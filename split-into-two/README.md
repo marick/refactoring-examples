@@ -50,7 +50,7 @@ responsibility annoying, so that change will come after
 splitting the `Controller` into one class that controls
 movement from place to place (call it the **Navigator**) and one
 that handles the vertical interaction (call it the
-**SettingAuthority**). 
+**SettingController**). 
 
 Reading the code and tests
 --------------
@@ -59,12 +59,12 @@ Each of the subdirectories has a README.md file that
 describes quirks of the implementation.
 
 
-Exercise 1: Superclass refactoring
+Exercise 1 (of 1+N+1): Superclass refactoring
 --------------------------
 
 **The short version**
 
-Make the `SettingAuthority` an empty superclass of
+Make the `SettingController` an empty superclass of
 `Controller`. Pull setting-relevant methods up into that
 superclass, keeping the tests passing at all time. Sever the
 inheritance connection, and rename `Controller` to be
@@ -72,40 +72,52 @@ Navigator.
 
 **Step-by-step**
 
-1. Create an empty `SettingAuthority` class with an empty
-    `SettingAuthority` test suite. Have `Controller` be its
-    subclass. All the `Controller` tests still pass.
+1.  Create an empty `SettingController` class with an empty
+    `SettingController` test suite. Have `Controller` be its
+    subclass. (Don't forget to put the `require_relative` in
+    either `requires.rb` or `controller.rb`.)
+    All the `Controller` tests still pass.
+
+1.  Identify the parts of `initialize` that are about
+    controlling settings. Move them up into the superclass. 
+    All the tests still pass.
 
 1.  One by one, move the `Controller` tests that are about
-    controlling settings up into the `SettingAuthority` test
+    controlling settings up into the `SettingController` test
     suite. Move the code to make them pass.
 
 1.  When that's done, we still have a `Controller` object that
-    does everything it used to do. We also have an
-    end-to-end test that checks that a tweak of the UI
-    propagates down into the system to make a change and
-    also propagates back up to the UI to show that the
-    change happened.
+    does everything it used to do. We have a `Configuration`
+    object that wires the system together. The wiring is
+    tested by an UpAndDownTheVerticalSlice "end-to-end-ish"
+    test. 
 
-1. Change the end-to-end test so that it no longer refers to `Controller` but only to `SettingAuthority`.
+    Change the `Configuration` so
+    that it (1) creates both a `Controller` and a
+    `SettingController` object, (2) connects the
+    `SettingController` to the `ValueTweaker` and to the
+    appropriate object down toward the hardware, and (3)
+    continues to connect the `Controller` to the objects that
+    don't have anything to do with changing the tweakable
+    value. The end-to-end test should still work.
 
-1. Change the object that wires up this whole subsystem so
-   that it (1) creates both a `Controller` and
-   `SettingAuthority` object, (2) connects the
-   `SettingAuthority` to the `ValueTweaker` and to the
-   appropriate object down toward the hardware, and (3)
-   continues to connect the `Controller` to the objects that
-   don't have anything to do with changing the tweakable
-   value. Confirm (manually) that both tweaking and the
-   remaining `Controller` end-to-end behaviors work.
+1.  Since it no longer uses its superclass's behavior, change
+    `Controller` so that it's no longer a subclass of
+    `SettingController`.
 
-1. Since it no longer uses its superclass's behavior, change
-   `Controller` so that it's no longer a subclass of
-   `SettingAuthority`.
+1.  Change `Controller`'s name to `Navigator`.
 
-1. Change the wire-up-the-whole-subsystem object so that it
-   also makes story B's vertical slice (new `ValueTweaker`,
-   new `SettingAuthority`, new connection to the
-   hardware). Confirm manually.
+Exercises 2 to 1+N: Other Refactorings
+--------------------------------------
 
-1. Change `Controller`'s name.
+Invent at least one other path that takes you from the same beginning class structure to the same end class structure.
+
+Exercise 1+N+1: The Next Refactoring
+------------------------------------
+
+Are you ready to add the next `ValueTweaker` to the UI? Or is there another appealing refactoring lurking in the wings?   
+   
+   
+   
+(I'd be inclined to "reify" the idea of a vertical slice into its own class.)
+

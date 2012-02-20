@@ -1,3 +1,30 @@
+Dependencies
+-----------
+
+* If you use RVM and Bundler, things will be automagically set
+up for you (once you do a `bundle install`). Note that RVM
+uses gems from the catch-all version of 1.9.2, not a
+project-specific set.
+
+* If not:
+
+   ** The code depends on Ruby 1.9.2. (Other versions of 1.9 might work, 1.8.X surely will not.)
+
+   ** You can find the list of gems that need to be available in `Gemfile`.
+
+Running the code
+--------------
+
+From the command line, you can run the tests with a plain
+`rake`.
+
+If you're using something like RubyMine to run the tests,
+notice that the pattern for test filenames is
+idiosyncratic. Use `**/*test*.rb`.
+
+Notes on the code
+--------------
+
 When reading the code and tests, I recommend starting with
 test/end-to-end-ish/up-and-down-the-vertical-slice-test.rb. 
 
