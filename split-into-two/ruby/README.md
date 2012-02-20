@@ -1,13 +1,13 @@
 Dependencies
 -----------
 
-* If you use RVM and Bundler, things will be automagically set
-  up for you (once you do a `bundle install`). Note that RVM
-  uses gems from the catch-all version of 1.9.2, not a
-  project-specific set.
-* If not:
-    ** The code depends on Ruby 1.9.2. (Other versions of 1.9 might work, 1.8.X surely will not.)
-    ** You can find the list of gems that need to be available in `Gemfile`.
+*   If you use RVM and Bundler, things will be automagically set
+    up for you (once you do a `bundle install`). Note that RVM
+    uses gems from the catch-all version of 1.9.2, not a
+    project-specific set.
+*   If not:
+    * The code depends on Ruby 1.9.2. (Other versions of 1.9 might work, 1.8.X surely will not.)
+    * You can find the list of gems that need to be available in `Gemfile`.
 
 Running the code
 --------------
