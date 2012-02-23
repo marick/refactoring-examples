@@ -39,4 +39,38 @@ class ReactiveTests < Test::Unit::TestCase
       assert_equal(101, destination.value)
     end
   end
+
+  context "auto-lifting" do
+    should "create implicit Behaviors" do
+      origin = ValueHolder.new(8)
+      destination = origin + 1
+      assert_equal(9, destination.value)
+
+      origin.value = 33
+      assert_equal(34, destination.value)
+    end
+
+    should "work with multi-argument methods" do
+      # See below for definition of max3
+      assert_equal(3, 1.max3(2, 3))
+
+      origin = ValueHolder.new(2)
+      other = origin * -1
+      final = origin.max3(8, other)
+      assert_equal(8, final.value)
+
+      origin.value = 100
+      assert_equal(100, final.value)
+
+      origin.value = -222
+      assert_equal(222, final.value)
+    end
+  end
 end
+
+class Fixnum
+  def max3(other1, other2)
+    [self, other1, other2].max
+  end
+end
+

@@ -1,4 +1,5 @@
 module Reactive
+
   class Behavior
 
     attr_writer :updater
@@ -27,6 +28,22 @@ module Reactive
 
     def update
       @value = @updater.call
+    end
+
+    def method_missing(message, *args)
+      this = self
+      updater = lambda do
+        values =
+          args.collect do |arg|
+            if arg.is_a?(Behavior)
+              arg.value
+            else
+              arg
+            end
+          end
+        this.value.send(message, *values)
+      end
+      Behavior.new(self, *args, &updater)
     end
   end
 
