@@ -1,10 +1,17 @@
 require_relative '../testutil'
 
+class Fixnum
+  # A useful N-argument method for testing
+  def max3(other1, other2)
+    [self, other1, other2].max
+  end
+end
+
+
 class ReactiveTests < Test::Unit::TestCase
   include Reactive
 
   context "value holders" do
-
     should "hold values" do
       v = ValueHolder.new(3)
       assert_equal(3, v.value)
@@ -38,9 +45,7 @@ class ReactiveTests < Test::Unit::TestCase
       origin.value = 0
       assert_equal(101, destination.value)
     end
-  end
 
-  context "auto-lifting" do
     should "create implicit Behaviors" do
       origin = ValueHolder.new(8)
       destination = origin + 1
@@ -65,12 +70,25 @@ class ReactiveTests < Test::Unit::TestCase
       origin.value = -222
       assert_equal(222, final.value)
     end
+
+  end
+
+  context "events" do
+    should "be able to send an event" do
+      s = EventStream.new
+      s.send_event(33)
+      assert_equal(33, s.most_recent_value)
+    end
+
+    should "be able to create new event streams from old" do
+      origin = EventStream.new
+      transformed = EventStream.new(origin) {
+        origin.value + 1
+      }
+      origin.send_event(33)
+      assert_equal(34, transformed.most_recent_value)
+    end
   end
 end
 
-class Fixnum
-  def max3(other1, other2)
-    [self, other1, other2].max
-  end
-end
 
