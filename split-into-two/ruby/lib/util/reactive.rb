@@ -3,6 +3,10 @@ module Reactive
   class ReactiveNode
     attr_reader :value
 
+    def self.follows(*earlier_nodes, &updater)
+      new(*earlier_nodes, &updater)
+    end
+
     def initialize(*earlier_nodes, &updater)
       @value = :no_value_at_all
       @updater = updater
@@ -64,6 +68,10 @@ module Reactive
   end
 
   class ValueHolder < Behavior
+    def self.containing(value)
+      new(value)
+    end
+
     def initialize(value)
       updater = -> {value}
       super(&updater)
@@ -71,14 +79,14 @@ module Reactive
   end
 
   class EventStream < ReactiveNode
+    def self.manual
+      new
+    end
+
     def most_recent_value; @value; end
 
     def send_event(new_value)
       self.value = new_value
-    end
-
-    def transform(&self_using_updater)
-      self.class.new(self, &updater)
     end
   end
 end
