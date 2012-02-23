@@ -1,11 +1,12 @@
 module Reactive
 
   class ReactiveNode
-    attr_reader :value
-
+    private_class_method :new
     def self.follows(*earlier_nodes, &updater)
       new(*earlier_nodes, &updater)
     end
+
+    attr_reader :value
 
     def initialize(*earlier_nodes, &updater)
       @value = :no_value_at_all
@@ -38,16 +39,6 @@ module Reactive
         node.update
       end
     end
-  end
-
-  class Behavior < ReactiveNode
-
-    attr_writer :updater
-
-    def initialize(*earlier_nodes, &updater)
-      super
-      update
-    end
 
     def method_missing(message, *args)
       this = self
@@ -62,25 +53,29 @@ module Reactive
             end
         this.value.send(message, *values)
       end
-      Behavior.new(self, *args, &updater)
+      self.class.follows(self, *args, &updater)
+    end
+  end
+
+  class Behavior < ReactiveNode
+    def initialize(*earlier_nodes, &updater)
+      super
+      update
     end
 
   end
 
   class ValueHolder < Behavior
     def self.containing(value)
-      new(value)
-    end
-
-    def initialize(value)
-      updater = -> {value}
-      super(&updater)
+      follows { value }
     end
   end
 
   class EventStream < ReactiveNode
     def self.manual
-      new
+      follows {
+        raise "Incorrect use of update function in a manual event stream"
+      }
     end
 
     def most_recent_value; @value; end

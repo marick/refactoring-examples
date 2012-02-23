@@ -88,7 +88,7 @@ class ReactiveTests < Test::Unit::TestCase
 
   context "Reactive Nodes" do
     should "take a block that calculates their value" do
-      b = ReactiveNode.new { 5 }
+      b = ReactiveNode.follows { 5 }
       b.update
       assert_equal(5, b.value)
     end
