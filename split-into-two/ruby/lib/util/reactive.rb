@@ -1,5 +1,6 @@
 module Reactive
 
+
   class ReactiveNode
     private_class_method :new
     def self.follows(*earlier_nodes, &updater)
@@ -12,6 +13,7 @@ module Reactive
       @value = :no_value_at_all
       @updater = updater
       @later_nodes = []
+      @earlier_nodes = earlier_nodes
       tell_earlier_nodes_about_me(earlier_nodes)
     end
 
@@ -21,12 +23,12 @@ module Reactive
       end
     end
 
-    def this_node_is_later_than_you(behavior)
-      @later_nodes << behavior
+    def this_node_is_later_than_you(this_node)
+      @later_nodes << this_node
     end
 
     def update
-      @value = @updater.call
+      @value = @updater.call(*just_values(@earlier_nodes))
     end
 
     def value=(new_value)
@@ -41,19 +43,21 @@ module Reactive
     end
 
     def method_missing(message, *args)
-      this = self
-      updater = lambda do
-        values =
-            args.collect do |arg|
-              if arg.is_a?(Behavior)
-                arg.value
-              else
-                arg
-              end
-            end
-        this.value.send(message, *values)
+      updater = lambda do |*just_values|
+        receiver = just_values.shift
+        receiver.send(message, *just_values)
       end
       self.class.follows(self, *args, &updater)
+    end
+
+    def just_values(args)
+      args.collect do |arg|
+        if arg.is_a?(ReactiveNode)
+          arg.value
+        else
+          arg
+        end
+      end
     end
   end
 
