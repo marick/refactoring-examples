@@ -14,7 +14,7 @@ module Reactive
 
     def initialize(*earlier_nodes, &recalculator)
       @value = :no_value_at_all
-      @recalculator = recalculator
+      @recalculator = recalculator || ->val {val}
       @later_nodes = []
       @earlier_nodes = earlier_nodes
       @change_callback = ->ignored{}

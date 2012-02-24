@@ -162,6 +162,14 @@ class ReactiveTests < Test::Unit::TestCase
       assert_equal(88, combiner.value)
     end
 
+    should "follow a variable if no block given" do
+      before = ReactiveNode.blank
+      after = ReactiveNode.follows(before)
+      before.value = 88
+      assert_equal(88, after.value)
+
+    end
+
     should "be able to generate nodes implicitly" do
       origin = ReactiveNode.blank
       origin.value = 8

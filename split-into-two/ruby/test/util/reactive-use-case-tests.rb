@@ -30,7 +30,7 @@ class ReactiveUseCaseTests < Test::Unit::TestCase
       @setting = value
     end
 
-    #@value_displayed = TimeVaryingValue.follows(@setting)
+    @value_displayed = TimeVaryingValue.follows(@setting)
   end
 
   should "propagate user changes" do
