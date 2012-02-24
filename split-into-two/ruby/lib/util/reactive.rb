@@ -67,6 +67,15 @@ module Reactive
       update
     end
 
+    # Flapjax startsWith
+    def self.changed_by_event_stream(event_stream, initial_value)
+      retval = new(event_stream) do |last_event|
+        last_event
+      end
+      retval.value = initial_value
+      retval
+    end
+
   end
 
   class ValueHolder < Behavior

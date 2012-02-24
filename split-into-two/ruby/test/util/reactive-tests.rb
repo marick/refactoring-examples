@@ -65,6 +65,14 @@ class ReactiveTests < Test::Unit::TestCase
       assert_equal(222, final.value)
     end
 
+    should "be able to accept values from an event stream" do
+      triggers = EventStream.manual
+      behavior = Behavior.changed_by_event_stream(triggers, 50)
+      assert_equal(50, behavior.value)
+
+      triggers.send_event(30)
+      assert_equal(30, behavior.value)
+    end
   end
 
   context "events" do
@@ -119,8 +127,9 @@ class ReactiveTests < Test::Unit::TestCase
       origin.value = 1
       assert_equal(2, destination.value)
       assert_equal(3, final_destination.value)
-
     end
+
+
 
 
   end
