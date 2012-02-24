@@ -2,6 +2,9 @@ module Reactive
 
 
   class ReactiveNode
+    # This should probably be a delegate instead of superclass
+    # because the subclasses don't want all of the methods
+    # (but the tests do)
     private_class_method :new
     def self.follows(*earlier_nodes, &updater)
       new(*earlier_nodes, &updater)
@@ -14,6 +17,7 @@ module Reactive
       @recalculator = recalculator
       @later_nodes = []
       @earlier_nodes = earlier_nodes
+      @change_callback = ->ignored{}
       tell_earlier_nodes_about_me(earlier_nodes)
     end
 
@@ -28,16 +32,20 @@ module Reactive
     end
 
     def recalculate
-      @value = @recalculator.call(*just_values(@earlier_nodes))
-      propagate
+      propagate(@recalculator.call(*just_values(@earlier_nodes)))
     end
 
     def value=(new_value)
-      @value = new_value
-      propagate
+      propagate(new_value)
     end
 
-    def propagate
+    def on_change(&block)
+      @change_callback = block
+    end
+
+    def propagate(value)
+      @value = value
+      @change_callback.(value)
       @later_nodes.each do |node|
         node.recalculate
       end
@@ -61,7 +69,7 @@ module Reactive
       end
     end
 
-    test_support
+    # test_support
 
     def self.blank
       follows() {}
@@ -92,6 +100,8 @@ module Reactive
   end
 
   class DiscreteValueStream < ReactiveNode
+    alias_method :on_addition, :on_change
+
     def self.manual
       follows {
         raise "Incorrect use of recalculation in a manual event stream"

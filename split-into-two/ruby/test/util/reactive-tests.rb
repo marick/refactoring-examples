@@ -199,10 +199,36 @@ class ReactiveTests < Test::Unit::TestCase
       origin.value=2000
       assert_equal(2111, destination.value)
     end
+
+    context "callbacks to update the outside world" do
+
+      should "happen on recalculation" do
+        origin = ReactiveNode.blank
+        destination = ReactiveNode.follows(origin) {|o| o.to_s.upcase.to_sym}
+
+        triggered = false
+        destination.on_change do | value |
+          triggered = value
+        end
+
+        origin.value = :new_value
+
+        assert_equal(:NEW_VALUE, triggered)
+      end
+
+      should "happen on value-setting" do
+        n = ReactiveNode.blank
+
+        triggered = false
+        n.on_change do | value |
+          triggered = value
+        end
+
+        n.value = :new_value
+        assert_equal(:new_value, triggered)
+      end
+    end
   end
 
 
-
 end
-
-
