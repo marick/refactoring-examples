@@ -17,13 +17,13 @@ class ReactiveUseCaseTests < Test::Unit::TestCase
 
   def setup
     # What our program knows about the current setting.
-    @hardware_setting = TimeVaryingValue.containing(DEFAULT)
+    @hardware_setting = TimeVaryingValue.starting_with(DEFAULT)
 
     # User initiated desired bumps up or down
-    @deltas = EventStream.manual
+    @deltas = DiscreteValueStream.manual
 
     # How a bump should actually change the setting.
-    @user_changes = EventStream.follows(@deltas) do |delta|
+    @user_changes = DiscreteValueStream.follows(@deltas) do |delta|
       delta + @setting.value
     end
     @user_changes.on_event do |value|
@@ -34,22 +34,22 @@ class ReactiveUseCaseTests < Test::Unit::TestCase
   end
 
   should_eventually "propagate user changes" do
-    @deltas.send_event(5)
+    @deltas.add_value(5)
 
-    assert_equal(55, @hardware_setting.value)
-    assert_equal(55, @value_displayed.value)
+    assert_equal(55, @hardware_setting.current)
+    assert_equal(55, @value_displayed.current)
   end
 
   should_eventually "propagate and obey hardware changes" do
-    @hardware_setting.value=(80)
+    @hardware_setting.change_to(80)
 
-    assert_equal(80, @hardware_setting.value)
-    assert_equal(80, @value_displayed.value)
+    assert_equal(80, @hardware_setting.current)
+    assert_equal(80, @value_displayed.current)
 
-    @deltas.send_event(5)
+    @deltas.add_value(5)
 
-    assert_equal(85, @hardware_setting.value)
-    assert_equal(85, @value_displayed.value)
+    assert_equal(85, @hardware_setting.current)
+    assert_equal(85, @value_displayed.current)
   end
 end
 

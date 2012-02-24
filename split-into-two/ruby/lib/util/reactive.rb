@@ -9,9 +9,9 @@ module Reactive
 
     attr_reader :value
 
-    def initialize(*earlier_nodes, &updater)
+    def initialize(*earlier_nodes, &recalculator)
       @value = :no_value_at_all
-      @updater = updater
+      @recalculator = recalculator
       @later_nodes = []
       @earlier_nodes = earlier_nodes
       tell_earlier_nodes_about_me(earlier_nodes)
@@ -27,27 +27,28 @@ module Reactive
       @later_nodes << this_node
     end
 
-    def update
-      @value = @updater.call(*just_values(@earlier_nodes))
+    def recalculate
+      @value = @recalculator.call(*just_values(@earlier_nodes))
+      propagate
     end
 
     def value=(new_value)
       @value = new_value
-      propagate()
+      propagate
     end
 
     def propagate
       @later_nodes.each do |node|
-        node.update
+        node.recalculate
       end
     end
 
     def method_missing(message, *args)
-      updater = lambda do |*just_values|
+      recalculator = lambda do |*just_values|
         receiver = just_values.shift
         receiver.send(message, *just_values)
       end
-      self.class.follows(self, *args, &updater)
+      self.class.follows(self, *args, &recalculator)
     end
 
     def just_values(args)
@@ -59,16 +60,25 @@ module Reactive
         end
       end
     end
+
+    test_support
+
+    def self.blank
+      follows() {}
+    end
+
   end
 
-  class Behavior < ReactiveNode
-    def initialize(*earlier_nodes, &updater)
+  class TimeVaryingValue < ReactiveNode
+    alias_method :current, :value
+    alias_method :change_to, :value=
+    def initialize(*earlier_nodes, &recalculator)
       super
-      update
+      recalculate
     end
 
     # Flapjax startsWith
-    def self.changed_by_event_stream(event_stream, initial_value)
+    def self.tracks_stream(event_stream, initial_value)
       retval = new(event_stream) do |last_event|
         last_event
       end
@@ -76,24 +86,21 @@ module Reactive
       retval
     end
 
-  end
-
-  class ValueHolder < Behavior
-    def self.containing(value)
+    def self.starting_with(value)
       follows { value }
     end
   end
 
-  class EventStream < ReactiveNode
+  class DiscreteValueStream < ReactiveNode
     def self.manual
       follows {
-        raise "Incorrect use of update function in a manual event stream"
+        raise "Incorrect use of recalculation in a manual event stream"
       }
     end
 
     def most_recent_value; @value; end
 
-    def send_event(new_value)
+    def add_value(new_value)
       self.value = new_value
     end
   end
