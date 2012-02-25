@@ -1,13 +1,5 @@
 require_relative '../testutil'
 
-class Fixnum
-  # A useful N-argument method for testing
-  def max3(other1, other2)
-    [self, other1, other2].max
-  end
-end
-
-
 class ReactiveUseCaseTests < Test::Unit::TestCase
   include Reactive
 
