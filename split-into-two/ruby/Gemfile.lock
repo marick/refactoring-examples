@@ -6,6 +6,7 @@ GEM
     hookr (1.1.1)
       fail-fast (= 1.0.0)
     rr (1.0.4)
+    rubactive (0.0.1)
     shoulda (2.11.3)
     test-unit (2.4.7)
 
@@ -17,5 +18,6 @@ DEPENDENCIES
   bundler
   hookr
   rr
+  rubactive
   shoulda
   test-unit
