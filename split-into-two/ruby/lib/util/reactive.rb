@@ -12,8 +12,10 @@ module Reactive
 
     attr_reader :value
 
+    DEFAULT_VALUE = :no_value_at_all
+
     def initialize(*earlier_nodes, &recalculator)
-      @value = :no_value_at_all
+      @value = DEFAULT_VALUE
       @recalculator = recalculator || ->val {val}
       @later_nodes = []
       @earlier_nodes = earlier_nodes
@@ -112,6 +114,10 @@ module Reactive
 
     def add_value(new_value)
       self.value = new_value
+    end
+
+    def empty?
+      most_recent_value == DEFAULT_VALUE
     end
   end
 end

@@ -90,6 +90,7 @@ class ReactiveTests < Test::Unit::TestCase
     should "start out with a null-like value" do
       s = DiscreteValueStream.manual
       assert_equal(:no_value_at_all, s.most_recent_value)
+      assert_true(true, s.empty?)
     end
 
     should "be able to create new event streams from old" do

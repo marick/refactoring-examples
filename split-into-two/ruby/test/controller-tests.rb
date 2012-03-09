@@ -14,7 +14,7 @@ class ControllerTest < Test::Unit::TestCase
                           allowed_range: MIN..MAX)
   end
 
-  should "change hardware wn user wants to adjust setting" do
+  should "change hardware when user wants to adjust setting" do
     during {
       @sut.adjust_setting(3)
     }.behold! {
